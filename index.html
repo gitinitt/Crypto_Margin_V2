@@ -11,6 +11,7 @@
             background-color: #ffffff;
             color: #000000;
             font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
         .container-box {
             border: 1px solid #e5e7eb;
@@ -19,204 +20,215 @@
         }
         .input-text {
             border: 1px solid #d1d5db;
-            padding: 10px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             width: 100%;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: #000000;
+            transition: all 0.2s ease;
         }
         .input-text:focus {
             outline: none;
             border-color: #000000;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.05);
         }
         input[type="range"] {
             accent-color: #000000;
         }
         .divider {
             height: 1px;
-            background-color: #e5e7eb;
-            margin: 20px 0;
+            background-color: #f3f4f6;
+            margin: 24px 0;
         }
         .strategy-card {
             border: 1px solid #000000;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 24px;
+            border-radius: 12px;
         }
         input[type=range]::-webkit-slider-runnable-track {
             background: #f3f4f6;
-            height: 4px;
-            border-radius: 2px;
+            height: 6px;
+            border-radius: 3px;
+        }
+        .roe-badge {
+            background: #000000;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 900;
+        }
+        .candle-input {
+            border-bottom: 2px solid #000000;
+            font-weight: 900;
+            text-align: center;
+            width: 60px;
+            outline: none;
         }
     </style>
 </head>
-<body class="min-h-screen py-10 px-4">
+<body class="min-h-screen py-10 px-4 bg-gray-50">
 
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-gray-100">
         <!-- Header -->
-        <header class="mb-10 text-center">
-            <h1 class="text-3xl font-black uppercase tracking-tighter">Futures Margin Calculator</h1>
-            <p class="text-gray-500 text-xs mt-1 uppercase tracking-widest font-medium">Precision Risk Management • Minimalist Edition</p>
+        <header class="mb-12 text-center">
+            <h1 class="text-3xl font-black uppercase tracking-tighter italic">Futures Margin Calculator</h1>
+            <p class="text-gray-400 text-[10px] mt-2 uppercase tracking-[0.3em] font-bold">Binance-Grade Liquidation Logic • Professional Edition</p>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
             <!-- Left Side: Inputs -->
-            <section class="space-y-6">
+            <section class="space-y-8">
                 <div>
-                    <label class="block text-[10px] font-bold uppercase mb-2 text-gray-400">Total Saldo (Wallet)</label>
+                    <label class="block text-[10px] font-black uppercase mb-2 text-gray-500 tracking-widest">Total Saldo (Wallet Balance)</label>
                     <div class="relative">
-                        <span class="absolute left-3 top-2.5 text-gray-400 font-medium">$</span>
-                        <input type="number" id="walletBalance" value="1000" class="input-text pl-8 font-bold">
+                        <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
+                        <input type="text" id="walletBalance" value="1,000.00" placeholder="0.00" class="input-text pl-10 font-bold">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] font-bold uppercase mb-2 text-gray-400">Margin Entry</label>
+                        <label class="block text-[10px] font-black uppercase mb-2 text-gray-500 tracking-widest">Margin Entry</label>
                         <div class="relative">
-                            <span class="absolute left-3 top-2.5 text-gray-400 font-medium">$</span>
-                            <input type="number" id="marginInput" value="50" class="input-text pl-8 font-bold">
+                            <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
+                            <input type="text" id="marginInput" value="100.00" placeholder="0.00" class="input-text pl-10 font-bold">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold uppercase mb-2 text-gray-400">% Saldo Terpakai</label>
+                        <label class="block text-[10px] font-black uppercase mb-2 text-gray-500 tracking-widest">% Saldo</label>
                         <div class="relative">
-                            <input type="number" id="percentBalance" value="5" class="input-text pr-8 font-bold text-right">
-                            <span class="absolute right-3 top-2.5 text-gray-400 font-medium">%</span>
+                            <input type="number" id="percentBalance" value="10" step="0.1" class="input-text pr-10 font-bold text-right">
+                            <span class="absolute right-4 top-3.5 text-gray-400 font-bold">%</span>
                         </div>
                     </div>
                 </div>
 
                 <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="text-[10px] font-bold uppercase text-gray-400">Leverage (Pengali)</label>
+                    <label class="block text-[10px] font-black uppercase mb-2 text-gray-500 tracking-widest">Harga Entry (Entry Price)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
+                        <input type="text" id="entryPrice" value="50,000.00" placeholder="0.00" class="input-text pl-10 font-bold">
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest">Leverage</label>
                         <div class="flex items-center gap-2">
-                            <input type="number" id="levManual" value="10" min="1" max="125" class="w-16 border-b border-black text-center font-black focus:outline-none">
-                            <span class="text-xs font-bold">X</span>
+                            <input type="number" id="levManual" value="10" min="1" max="125" class="w-16 border-b-2 border-black text-center font-black focus:outline-none text-lg">
+                            <span class="text-xs font-black">X</span>
                         </div>
                     </div>
-                    <input type="range" id="levSlider" min="1" max="125" value="10" class="w-full">
+                    <input type="range" id="levSlider" min="1" max="125" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                     
-                    <div id="safetyStatus" class="mt-4 p-3 rounded text-center text-[10px] font-bold uppercase tracking-widest border transition-all duration-300">
-                        Status Keamanan: -
+                    <div id="safetyStatus" class="mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border transition-all duration-500">
+                        Status: CALCULATING
                     </div>
                 </div>
             </section>
 
             <!-- Right Side: Results -->
-            <section class="container-box p-8 flex flex-col justify-between shadow-sm">
-                <div class="space-y-6">
+            <section class="container-box p-8 flex flex-col justify-between shadow-xl border-2 border-black relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-5">
+                    <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.97 0-1.8 1.39-3.06 3.11-3.43V4h2.67v1.94c1.47.31 2.83 1.22 3.11 3.19h-1.91c-.28-1.15-1.12-1.64-2.32-1.64-1.46 0-2.31.63-2.31 1.58 0 .89.71 1.41 2.83 1.94 2.76.69 4.02 1.89 4.02 4.04 0 1.99-1.54 3.15-3.32 3.48z"/></svg>
+                </div>
+                
+                <div class="space-y-8 relative z-10">
                     <div class="flex justify-between items-end">
-                        <span class="text-[10px] text-gray-400 font-bold uppercase">Position Size (Kontrak)</span>
-                        <span id="posSize" class="font-black text-2xl">$0.00</span>
+                        <span class="text-[10px] text-gray-400 font-black uppercase tracking-widest">Position Size</span>
+                        <span id="posSize" class="font-black text-2xl tracking-tighter">$0.00</span>
                     </div>
 
-                    <div class="flex justify-between items-start">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] text-red-600 font-bold uppercase">Jarak Likuidasi</span>
-                            <span class="text-[9px] text-gray-400 italic mt-0.5">*(% Perubahan Harga dari Entry)</span>
+                    <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-[10px] text-red-600 font-black uppercase tracking-widest">Liq. Distance</span>
+                            <span id="liqDist" class="font-black text-3xl text-red-600 tracking-tighter">0.00%</span>
                         </div>
-                        <span id="liqDist" class="font-black text-3xl text-red-600">0%</span>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[9px] text-red-400 font-bold uppercase">Estimated Liq. Price</span>
+                            <span id="liqValueLabel" class="text-xs font-black text-red-700">$0.00</span>
+                        </div>
                     </div>
 
-                    <div class="flex justify-between items-end">
-                        <span class="text-[10px] text-gray-400 font-bold uppercase">Sisa Saldo Aman</span>
-                        <span id="remBal" class="font-bold text-xl">$0.00</span>
+                    <div class="flex justify-between items-end border-t border-gray-100 pt-4">
+                        <span class="text-[10px] text-gray-400 font-black uppercase tracking-widest">Unused Wallet</span>
+                        <span id="remBal" class="font-bold text-xl tracking-tighter">$0.00</span>
                     </div>
                 </div>
 
                 <div class="divider"></div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="p-3 bg-gray-50 rounded border border-gray-100">
-                        <p class="text-[9px] text-gray-400 font-bold uppercase mb-1">Profit (+2% Harga)</p>
-                        <p id="p2" class="font-bold text-green-600 text-sm">+$0.00</p>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between px-1">
+                        <span class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Candle Movement Sim.</span>
+                        <div class="flex items-center gap-1">
+                            <input type="number" id="candleIn" value="2.0" step="0.1" class="candle-input text-lg">
+                            <span class="text-xs font-black">%</span>
+                        </div>
                     </div>
-                    <div class="p-3 bg-gray-50 rounded border border-gray-100">
-                        <p class="text-[9px] text-gray-400 font-bold uppercase mb-1">Loss (-2% Harga)</p>
-                        <p id="l2" class="font-bold text-red-600 text-sm">-$0.00</p>
+                    <input type="range" id="candleSli" min="0.1" max="10" step="0.1" value="2" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-green-50 rounded-xl border border-green-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <p class="text-[9px] text-green-700 font-black uppercase">Profit</p>
+                                <span class="roe-badge" id="pRoeBadge">+20.0% ROE</span>
+                            </div>
+                            <p id="pROE" class="font-black text-green-600 text-sm">+$0.00</p>
+                            <p id="pPrice" class="text-[9px] text-green-500 font-medium mt-1">At $0.00</p>
+                        </div>
+                        <div class="p-4 bg-red-50 rounded-xl border border-red-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <p class="text-[9px] text-red-700 font-black uppercase">Loss</p>
+                                <span class="roe-badge" id="lRoeBadge">-20.0% ROE</span>
+                            </div>
+                            <p id="lROE" class="font-black text-red-600 text-sm">-$0.00</p>
+                            <p id="lPrice" class="text-[9px] text-red-500 font-medium mt-1">At $0.00</p>
+                        </div>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- Restoration of Strategy & Info Sections -->
+        <!-- Strategy Sections -->
         <section class="space-y-12">
-            <!-- Strategy Section -->
             <div class="border-t-2 border-black pt-10">
-                <h2 class="text-xl font-black mb-6 uppercase tracking-tighter italic">Simulasi Modal Ideal & Jarak Aman</h2>
+                <h2 class="text-xl font-black mb-6 uppercase tracking-tighter italic">Trading Dynamics</h2>
                 <div class="strategy-card bg-white">
-                    <p class="text-sm leading-relaxed mb-6">
-                        <strong>Logika Jarak Aman:</strong> Trading yang sehat adalah ketika posisi Anda memiliki "napas" yang cukup untuk menahan fluktuasi pasar. Jarak likuidasi harus dihitung dari <strong>harga entry</strong>.
-                    </p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="text-sm">
-                            <h3 class="font-bold border-b border-black pb-1 mb-3 uppercase text-xs">Skenario Aman (Pro)</h3>
-                            <ul class="space-y-2 text-gray-600">
-                                <li>• <strong>Modal Ideal:</strong> $10,000</li>
-                                <li>• <strong>Margin:</strong> $100 (Hanya 1% Modal)</li>
-                                <li>• <strong>Leverage:</strong> 10x</li>
-                                <li>• <strong>Jarak Liq:</strong> 10% dari harga entry</li>
-                            </ul>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm leading-relaxed text-gray-600">
+                        <div>
+                            <h3 class="font-black uppercase text-xs mb-3 text-black">How Candle Move Affects ROE</h3>
+                            <p>
+                                Your profit percentage (ROE) is the product of <strong>Asset Movement (%) × Leverage</strong>.
+                                <br><br>
+                                If a candle moves <strong>2%</strong> and you use <strong>10x leverage</strong>, your wallet sees a <strong>20% ROE</strong>. If you use <strong>50x leverage</strong>, that same 2% move becomes <strong>100% ROE</strong>.
+                            </p>
                         </div>
-                        <div class="text-sm">
-                            <h3 class="font-bold border-b border-black pb-1 mb-3 uppercase text-xs">Skenario Berisiko (High Risk)</h3>
-                            <ul class="space-y-2 text-gray-600">
-                                <li>• <strong>Modal:</strong> $500</li>
-                                <li>• <strong>Margin:</strong> $500 (All-in)</li>
-                                <li>• <strong>Leverage:</strong> 50x</li>
-                                <li>• <strong>Jarak Liq:</strong> 2% dari harga entry</li>
-                            </ul>
+                        <div class="bg-black text-white p-6 rounded-xl">
+                            <h3 class="font-black uppercase text-[10px] mb-4 tracking-widest text-gray-400 text-center">ROE Quick-Chart</h3>
+                            <div class="space-y-3 font-mono text-[11px]">
+                                <div class="flex justify-between border-b border-gray-800 pb-1">
+                                    <span>Candle 1% @ 10x</span><span class="text-green-400">10% ROE</span>
+                                </div>
+                                <div class="flex justify-between border-b border-gray-800 pb-1">
+                                    <span>Candle 1% @ 50x</span><span class="text-green-400">50% ROE</span>
+                                </div>
+                                <div class="flex justify-between border-b border-gray-800 pb-1">
+                                    <span>Candle 2% @ 50x</span><span class="text-green-400">100% ROE</span>
+                                </div>
+                                <div class="flex justify-between border-b border-gray-800 pb-1">
+                                    <span>Candle 5% @ 20x</span><span class="text-green-400">100% ROE</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional Detail Section -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm leading-relaxed border-t border-gray-100 pt-10">
-                <div class="p-5 border border-gray-200 rounded-lg bg-gray-50">
-                    <h3 class="font-bold mb-3 uppercase text-xs tracking-widest">Likuidasi vs Entry (%)</h3>
-                    <p class="text-gray-600">
-                        <strong>Ya, Benar.</strong> Persentase yang muncul adalah jarak harga yang dibutuhkan aset untuk bergerak melawan Anda dari titik entry. Jika jarak 10%, maka Anda terlikuidasi saat harga bergerak 10% dari harga masuk.
-                    </p>
-                </div>
-                <div class="p-5 border border-gray-200 rounded-lg bg-gray-50">
-                    <h3 class="font-bold mb-3 uppercase text-xs tracking-widest">Rule 1% & Psikologi</h3>
-                    <p class="text-gray-600">
-                        Trader pro jarang merisikokan lebih dari 1% modal total untuk satu posisi. Ini menjaga emosi tetap tenang meskipun pasar sedang "badai" atau fluktuatif. Dengan fitur <strong>% Saldo</strong> di atas, Anda bisa selalu memastikan input margin tidak melebihi batas psikologis Anda.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Leverage Reference Table -->
-            <div class="bg-black text-white p-8 rounded-lg">
-                <h3 class="font-bold mb-6 uppercase text-center text-xs tracking-[0.3em]">Tabel Ketahanan Harga (% dari Entry)</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 text-center">
-                    <div class="border border-gray-800 p-3">
-                        <p class="text-gray-500 text-[10px] uppercase mb-1">3x</p>
-                        <p class="font-bold text-sm">± 33.3%</p>
-                    </div>
-                    <div class="border border-gray-800 p-3">
-                        <p class="text-gray-500 text-[10px] uppercase mb-1">5x</p>
-                        <p class="font-bold text-sm">± 20.0%</p>
-                    </div>
-                    <div class="border border-gray-800 p-3">
-                        <p class="text-gray-500 text-[10px] uppercase mb-1">10x</p>
-                        <p class="font-bold text-sm">± 10.0%</p>
-                    </div>
-                    <div class="border border-gray-800 p-3">
-                        <p class="text-gray-500 text-[10px] uppercase mb-1">20x</p>
-                        <p class="font-bold text-sm">± 5.0%</p>
-                    </div>
-                    <div class="border border-gray-800 p-3">
-                        <p class="text-gray-500 text-[10px] uppercase mb-1">50x</p>
-                        <p class="font-bold text-sm">± 2.0%</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer class="mt-20 mb-10 text-center text-[10px] text-gray-400 uppercase tracking-widest">
-            Trading System Validation • Minimalist White Edition • 2024
+        <footer class="mt-20 mb-10 text-center text-[10px] text-gray-300 uppercase tracking-[0.5em] font-bold">
+            Real-Time Engine • Precision Validation • 2026
         </footer>
     </div>
 
@@ -224,64 +236,130 @@
         const wIn = document.getElementById('walletBalance');
         const mIn = document.getElementById('marginInput');
         const pIn = document.getElementById('percentBalance');
+        const eIn = document.getElementById('entryPrice');
         const lMan = document.getElementById('levManual');
         const lSli = document.getElementById('levSlider');
+        const candleIn = document.getElementById('candleIn');
+        const candleSli = document.getElementById('candleSli');
         const sStatus = document.getElementById('safetyStatus');
 
         const psOut = document.getElementById('posSize');
         const ldOut = document.getElementById('liqDist');
+        const lvOut = document.getElementById('liqValueLabel');
         const rbOut = document.getElementById('remBal');
-        const p2Out = document.getElementById('p2');
-        const l2Out = document.getElementById('l2');
+        const pROEOut = document.getElementById('pROE');
+        const lROEOut = document.getElementById('lROE');
+        const pPriceOut = document.getElementById('pPrice');
+        const lPriceOut = document.getElementById('lPrice');
+        const pBadge = document.getElementById('pRoeBadge');
+        const lBadge = document.getElementById('lRoeBadge');
 
-        function fmt(v) {
-            return '$' + parseFloat(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        function formatInput(value) {
+            let cleanValue = value.replace(/[^0-9.]/g, '');
+            let parts = cleanValue.split('.');
+            if (parts.length > 2) cleanValue = parts[0] + '.' + parts.slice(1).join('');
+            if (parts[0]) {
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+            return parts.join('.');
+        }
+
+        function parseFormatted(val) {
+            return parseFloat(val.toString().replace(/,/g, '')) || 0;
+        }
+
+        function fmtDisplay(v) {
+            return '$' + v.toLocaleString('en-US', {
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2
+            });
+        }
+
+        function applyLiveFormatting(e) {
+            const el = e.target;
+            const originalSelection = el.selectionStart;
+            const originalValueLength = el.value.length;
+            const formatted = formatInput(el.value);
+            el.value = formatted;
+            const newLength = el.value.length;
+            const selectionOffset = newLength - originalValueLength;
+            el.setSelectionRange(originalSelection + selectionOffset, originalSelection + selectionOffset);
+            calculate(el.id === 'walletBalance' ? 'wallet' : (el.id === 'marginInput' ? 'margin' : 'entry'));
         }
 
         function updateSafety(liqPercent) {
             if (liqPercent >= 15) {
-                sStatus.innerText = "Status: AMAN (SAFE)";
-                sStatus.className = "mt-4 p-3 rounded text-center text-[10px] font-bold uppercase tracking-widest border border-black bg-white text-black";
-            } else if (liqPercent >= 5) {
-                sStatus.innerText = "Status: NETRAL (NEUTRAL)";
-                sStatus.className = "mt-4 p-3 rounded text-center text-[10px] font-bold uppercase tracking-widest border border-gray-200 bg-gray-50 text-gray-500";
+                sStatus.innerText = "Status: CONSERVATIVE (SAFE)";
+                sStatus.className = "mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border border-black bg-white text-black shadow-sm";
+            } else if (liqPercent >= 6) {
+                sStatus.innerText = "Status: MODERATE (CAUTION)";
+                sStatus.className = "mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border border-gray-200 bg-gray-50 text-gray-500";
             } else {
-                sStatus.innerText = "Status: BERISIKO (NOT SAFE)";
-                sStatus.className = "mt-4 p-3 rounded text-center text-[10px] font-bold uppercase tracking-widest border border-red-600 bg-red-600 text-white animate-pulse shadow-lg";
+                sStatus.innerText = "Status: AGGRESSIVE (HIGH RISK)";
+                sStatus.className = "mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border border-red-600 bg-red-600 text-white animate-pulse shadow-lg";
             }
         }
 
         function calculate(source) {
-            const wallet = parseFloat(wIn.value) || 0;
+            const wallet = parseFormatted(wIn.value);
+            const entryPrice = parseFormatted(eIn.value);
             const lev = parseInt(lMan.value) || 1;
-            let margin = parseFloat(mIn.value) || 0;
+            const candleMovePercent = parseFloat(candleIn.value) || 0;
+            
+            let margin = parseFormatted(mIn.value);
             let percent = parseFloat(pIn.value) || 0;
 
             if (source === 'wallet' || source === 'percent') {
                 margin = (percent / 100) * wallet;
-                mIn.value = margin.toFixed(2);
+                mIn.value = formatInput(margin.toFixed(2));
             } else if (source === 'margin') {
                 if (wallet > 0) {
                     percent = (margin / wallet) * 100;
                     pIn.value = percent.toFixed(2);
-                } else {
-                    pIn.value = 0;
                 }
             }
 
-            const pos = margin * lev;
-            const liqDist = (100 / lev);
-            const rem = wallet - margin;
-            const pnl2 = pos * 0.02;
+            const posSize = margin * lev;
+            const MMR = 0.005; 
+            const liqDistPercent = ((1 / lev) - MMR) * 100;
+            const safeLiqDist = Math.max(0, liqDistPercent);
+            const liqPrice = entryPrice > 0 ? entryPrice * (1 - (safeLiqDist/100)) : 0;
+            const remWallet = wallet - margin;
+            
+            // Simulation based on candle movement
+            const roeResult = candleMovePercent * lev;
+            const profitAmount = margin * (roeResult / 100);
+            
+            const targetProfitPrice = entryPrice * (1 + (candleMovePercent/100));
+            const targetLossPrice = entryPrice * (1 - (candleMovePercent/100));
 
-            psOut.innerText = fmt(pos);
-            ldOut.innerText = liqDist.toFixed(2) + '%';
-            rbOut.innerText = fmt(rem);
-            p2Out.innerText = '+' + fmt(pnl2);
-            l2Out.innerText = '-' + fmt(pnl2);
+            // Update UI
+            psOut.innerText = fmtDisplay(posSize);
+            ldOut.innerText = safeLiqDist.toFixed(2) + '%';
+            lvOut.innerText = entryPrice > 0 ? fmtDisplay(liqPrice) : "Entry Price Required";
+            rbOut.innerText = fmtDisplay(remWallet);
+            
+            pROEOut.innerText = '+' + fmtDisplay(profitAmount);
+            lROEOut.innerText = '-' + fmtDisplay(profitAmount);
+            pBadge.innerText = `+${roeResult.toFixed(1)}% ROE`;
+            lBadge.innerText = `-${roeResult.toFixed(1)}% ROE`;
 
-            updateSafety(liqDist);
+            if(entryPrice > 0) {
+                pPriceOut.innerText = `At ${fmtDisplay(targetProfitPrice)}`;
+                lPriceOut.innerText = `At ${fmtDisplay(targetLossPrice)}`;
+            } else {
+                pPriceOut.innerText = "Set Entry Price";
+                lPriceOut.innerText = "Set Entry Price";
+            }
+
+            updateSafety(safeLiqDist);
         }
+
+        // Listeners
+        wIn.addEventListener('input', applyLiveFormatting);
+        mIn.addEventListener('input', applyLiveFormatting);
+        eIn.addEventListener('input', applyLiveFormatting);
+        pIn.addEventListener('input', () => calculate('percent'));
 
         lSli.addEventListener('input', () => {
             lMan.value = lSli.value;
@@ -296,14 +374,24 @@
             calculate('lev');
         });
 
-        wIn.addEventListener('input', () => calculate('wallet'));
-        mIn.addEventListener('input', () => calculate('margin'));
-        pIn.addEventListener('input', () => calculate('percent'));
+        candleSli.addEventListener('input', () => {
+            candleIn.value = candleSli.value;
+            calculate('candle');
+        });
 
-        // Initial update
+        candleIn.addEventListener('input', () => {
+            candleSli.value = candleIn.value;
+            calculate('candle');
+        });
+
+        [wIn, mIn, eIn].forEach(el => {
+            el.addEventListener('blur', (e) => {
+                let val = parseFormatted(e.target.value);
+                e.target.value = formatInput(val.toFixed(2));
+            });
+        });
+
+        // Start
         calculate('margin');
     </script>
-</body>
-</html>
-
-                  
+</body
