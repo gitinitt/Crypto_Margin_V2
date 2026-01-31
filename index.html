@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Margin Calculator - Professional Minimalist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: 'Inter', sans-serif;
+        }
+        .container-box {
+            border: 1px solid #e5e7eb;
+            background-color: #ffffff;
+            border-radius: 8px;
+        }
+        .input-text {
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 1rem;
+            color: #000000;
+        }
+        .input-text:focus {
+            outline: none;
+            border-color: #000000;
+        }
+        input[type="range"] {
+            accent-color: #000000;
+        }
+        .divider {
+            height: 1px;
+            background-color: #e5e7eb;
+            margin: 20px 0;
+        }
+        .strategy-card {
+            border: 1px solid #000000;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            background: #f3f4f6;
+            height: 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4">
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl font-black uppercase tracking-tighter">Futures Margin Calculator</h1>
+            <p class="text-gray-500 text-xs mt-1 uppercase tracking-widest font-medium">Precision Risk Management • Minimalist Edition</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+            <!-- Left Side: Inputs -->
+            <section class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase mb-2 text-gray-400">Total Saldo (Wallet)</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-2.5 text-gray-400 font-medium">$</span>
+                        <input type="number" id="walletBalance" value="1000" class="input-text pl-8 font-bold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase mb-2 text-gray-400">Margin Entry</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2.5 text-gray-400 font-medium">$</span>
+                            <input type="number" id="marginInput" value="50" class="input-text pl-8 font-bold">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase mb-2 text-gray-400">% Saldo Terpakai</label>
+                        <div class="relative">
+                            <input type="number" id="percentBalance" value="5" class="input-text pr-8 font-bold text-right">
+                            <span class="absolute right-3 top-2.5 text-gray-400 font-medium">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-[10px] font-bold uppercase text-gray-400">Leverage (Pengali)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="levManual" value="10" min="1" max="125" class="w-16 border-b border-black text-center font-black focus:outline-none">
+                            <span class="text-xs font-bold">X</span>
+                        </div>
+                    </div>
+                    <input type="range" id="levSlider" min="1" max="125" value="10" class="w-full">
+                    
+                    <div id="safetyStatus" class="mt-4 p-3 rounded text-center text-[10px] font-bold uppercase tracking-widest border transition-all duration-300">
+                        Status Keamanan: -
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: Results -->
+            <section class="container-box p-8 flex flex-col justify-between shadow-sm">
+                <div class="space-y-6">
+                    <div class="flex justify-between items-end">
+                        <span class="text-[10px] text-gray-400 font-bold uppercase">Position Size (Kontrak)</span>
+                        <span id="posSize" class="font-black text-2xl">$0.00</span>
+                    </div>
+
+                    <div class="flex justify-between items-start">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] text-red-600 font-bold uppercase">Jarak Likuidasi</span>
+                            <span class="text-[9px] text-gray-400 italic mt-0.5">*(% Perubahan Harga dari Entry)</span>
+                        </div>
+                        <span id="liqDist" class="font-black text-3xl text-red-600">0%</span>
+                    </div>
+
+                    <div class="flex justify-between items-end">
+                        <span class="text-[10px] text-gray-400 font-bold uppercase">Sisa Saldo Aman</span>
+                        <span id="remBal" class="font-bold text-xl">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-3 bg-gray-50 rounded border border-gray-100">
+                        <p class="text-[9px] text-gray-400 font-bold uppercase mb-1">Profit (+2% Harga)</p>
+                        <p id="p2" class="font-bold text-green-600 text-sm">+$0.00</p>
+                    </div>
+                    <div class="p-3 bg-gray-50 rounded border border-gray-100">
+                        <p class="text-[9px] text-gray-400 font-bold uppercase mb-1">Loss (-2% Harga)</p>
+                        <p id="l2" class="font-bold text-red-600 text-sm">-$0.00</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Restoration of Strategy & Info Sections -->
+        <section class="space-y-12">
+            <!-- Strategy Section -->
+            <div class="border-t-2 border-black pt-10">
+                <h2 class="text-xl font-black mb-6 uppercase tracking-tighter italic">Simulasi Modal Ideal & Jarak Aman</h2>
+                <div class="strategy-card bg-white">
+                    <p class="text-sm leading-relaxed mb-6">
+                        <strong>Logika Jarak Aman:</strong> Trading yang sehat adalah ketika posisi Anda memiliki "napas" yang cukup untuk menahan fluktuasi pasar. Jarak likuidasi harus dihitung dari <strong>harga entry</strong>.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="text-sm">
+                            <h3 class="font-bold border-b border-black pb-1 mb-3 uppercase text-xs">Skenario Aman (Pro)</h3>
+                            <ul class="space-y-2 text-gray-600">
+                                <li>• <strong>Modal Ideal:</strong> $10,000</li>
+                                <li>• <strong>Margin:</strong> $100 (Hanya 1% Modal)</li>
+                                <li>• <strong>Leverage:</strong> 10x</li>
+                                <li>• <strong>Jarak Liq:</strong> 10% dari harga entry</li>
+                            </ul>
+                        </div>
+                        <div class="text-sm">
+                            <h3 class="font-bold border-b border-black pb-1 mb-3 uppercase text-xs">Skenario Berisiko (High Risk)</h3>
+                            <ul class="space-y-2 text-gray-600">
+                                <li>• <strong>Modal:</strong> $500</li>
+                                <li>• <strong>Margin:</strong> $500 (All-in)</li>
+                                <li>• <strong>Leverage:</strong> 50x</li>
+                                <li>• <strong>Jarak Liq:</strong> 2% dari harga entry</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Detail Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm leading-relaxed border-t border-gray-100 pt-10">
+                <div class="p-5 border border-gray-200 rounded-lg bg-gray-50">
+                    <h3 class="font-bold mb-3 uppercase text-xs tracking-widest">Likuidasi vs Entry (%)</h3>
+                    <p class="text-gray-600">
+                        <strong>Ya, Benar.</strong> Persentase yang muncul adalah jarak harga yang dibutuhkan aset untuk bergerak melawan Anda dari titik entry. Jika jarak 10%, maka Anda terlikuidasi saat harga bergerak 10% dari harga masuk.
+                    </p>
+                </div>
+                <div class="p-5 border border-gray-200 rounded-lg bg-gray-50">
+                    <h3 class="font-bold mb-3 uppercase text-xs tracking-widest">Rule 1% & Psikologi</h3>
+                    <p class="text-gray-600">
+                        Trader pro jarang merisikokan lebih dari 1% modal total untuk satu posisi. Ini menjaga emosi tetap tenang meskipun pasar sedang "badai" atau fluktuatif. Dengan fitur <strong>% Saldo</strong> di atas, Anda bisa selalu memastikan input margin tidak melebihi batas psikologis Anda.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Leverage Reference Table -->
+            <div class="bg-black text-white p-8 rounded-lg">
+                <h3 class="font-bold mb-6 uppercase text-center text-xs tracking-[0.3em]">Tabel Ketahanan Harga (% dari Entry)</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 text-center">
+                    <div class="border border-gray-800 p-3">
+                        <p class="text-gray-500 text-[10px] uppercase mb-1">3x</p>
+                        <p class="font-bold text-sm">± 33.3%</p>
+                    </div>
+                    <div class="border border-gray-800 p-3">
+                        <p class="text-gray-500 text-[10px] uppercase mb-1">5x</p>
+                        <p class="font-bold text-sm">± 20.0%</p>
+                    </div>
+                    <div class="border border-gray-800 p-3">
+                        <p class="text-gray-500 text-[10px] uppercase mb-1">10x</p>
+                        <p class="font-bold text-sm">± 10.0%</p>
+                    </div>
+                    <div class="border border-gray-800 p-3">
+                        <p class="text-gray-500 text-[10px] uppercase mb-1">20x</p>
+                        <p class="font-bold text-sm">± 5.0%</p>
+                    </div>
+                    <div class="border border-gray-800 p-3">
+                        <p class="text-gray-500 text-[10px] uppercase mb-1">50x</p>
+                        <p class="font-bold text-sm">± 2.0%</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-20 mb-10 text-center text-[10px] text-gray-400 uppercase tracking-widest">
+            Trading System Validation • Minimalist White Edition • 2024
+        </footer>
+    </div>
+
+    <script>
+        const wIn = document.getElementById('walletBalance');
+        const mIn = document.getElementById('marginInput');
+        const pIn = document.getElementById('percentBalance');
+        const lMan = document.getElementById('levManual');
+        const lSli = document.getElementById('levSlider');
+        const sStatus = document.getElementById('safetyStatus');
+
+        const psOut = document.getElementById('posSize');
+        const ldOut = document.getElementById('liqDist');
+        const rbOut = document.getElementById('remBal');
+        const p2Out = document.getElementById('p2');
+        const l2Out = document.getElementById('l2');
+
+        function fmt(v) {
+            return '$' + parseFloat(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+
+        function updateSafety(liqPercent) {
+            if (liqPercent >= 15) {
+                sStatus.innerText = "Status: AMAN (SAFE)";
+                sStatus.className = "mt-4 p-3 rounded text-center text-[10px] font-bold uppercase tracking-widest border border-black bg-white text-black";
+            } else if (liqPercent >= 5) {
+                sStatus.innerText = "Status: NETRAL (NEUTRAL)";
+                sStatus.className = "mt-4 p-3 rounded text-center text-[10px] font-bold uppercase tracking-widest border border-gray-200 bg-gray-50 text-gray-500";
+            } else {
+                sStatus.innerText = "Status: BERISIKO (NOT SAFE)";
+                sStatus.className = "mt-4 p-3 rounded text-center text-[10px] font-bold uppercase tracking-widest border border-red-600 bg-red-600 text-white animate-pulse shadow-lg";
+            }
+        }
+
+        function calculate(source) {
+            const wallet = parseFloat(wIn.value) || 0;
+            const lev = parseInt(lMan.value) || 1;
+            let margin = parseFloat(mIn.value) || 0;
+            let percent = parseFloat(pIn.value) || 0;
+
+            if (source === 'wallet' || source === 'percent') {
+                margin = (percent / 100) * wallet;
+                mIn.value = margin.toFixed(2);
+            } else if (source === 'margin') {
+                if (wallet > 0) {
+                    percent = (margin / wallet) * 100;
+                    pIn.value = percent.toFixed(2);
+                } else {
+                    pIn.value = 0;
+                }
+            }
+
+            const pos = margin * lev;
+            const liqDist = (100 / lev);
+            const rem = wallet - margin;
+            const pnl2 = pos * 0.02;
+
+            psOut.innerText = fmt(pos);
+            ldOut.innerText = liqDist.toFixed(2) + '%';
+            rbOut.innerText = fmt(rem);
+            p2Out.innerText = '+' + fmt(pnl2);
+            l2Out.innerText = '-' + fmt(pnl2);
+
+            updateSafety(liqDist);
+        }
+
+        lSli.addEventListener('input', () => {
+            lMan.value = lSli.value;
+            calculate('lev');
+        });
+
+        lMan.addEventListener('input', () => {
+            let v = parseInt(lMan.value);
+            if (v > 125) v = 125;
+            if (v < 1) v = 1;
+            lSli.value = v;
+            calculate('lev');
+        });
+
+        wIn.addEventListener('input', () => calculate('wallet'));
+        mIn.addEventListener('input', () => calculate('margin'));
+        pIn.addEventListener('input', () => calculate('percent'));
+
+        // Initial update
+        calculate('margin');
+    </script>
+</body>
+</html>
+
+                  
