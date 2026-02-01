@@ -3,20 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Margin Calculator - Professional Minimalist</title>
+    <title>Crypto Margin Calculator - Professional Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #ffffff;
+            background-color: #f9fafb;
             color: #000000;
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
-        }
-        .container-box {
-            border: 1px solid #e5e7eb;
-            background-color: #ffffff;
-            border-radius: 8px;
         }
         .input-text {
             border: 1px solid #d1d5db;
@@ -35,20 +30,18 @@
         input[type="range"] {
             accent-color: #000000;
         }
-        .divider {
-            height: 1px;
-            background-color: #f3f4f6;
-            margin: 24px 0;
+        .mode-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .strategy-card {
-            border: 1px solid #000000;
-            padding: 24px;
-            border-radius: 12px;
+        .mode-btn.active-long {
+            background-color: #10b981;
+            color: white;
+            border-color: #10b981;
         }
-        input[type=range]::-webkit-slider-runnable-track {
-            background: #f3f4f6;
-            height: 6px;
-            border-radius: 3px;
+        .mode-btn.active-short {
+            background-color: #ef4444;
+            color: white;
+            border-color: #ef4444;
         }
         .roe-badge {
             background: #000000;
@@ -58,32 +51,38 @@
             font-size: 10px;
             font-weight: 900;
         }
-        .candle-input {
+        .custom-input {
             border-bottom: 2px solid #000000;
             font-weight: 900;
             text-align: center;
-            width: 60px;
             outline: none;
+            background: transparent;
         }
     </style>
 </head>
-<body class="min-h-screen py-10 px-4 bg-gray-50">
+<body class="min-h-screen py-6 px-4">
 
-    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-sm border border-gray-100">
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-3xl shadow-2xl border border-gray-100">
         <!-- Header -->
-        <header class="mb-12 text-center">
-            <h1 class="text-3xl font-black uppercase tracking-tighter italic">Futures Margin Calculator</h1>
-            <p class="text-gray-400 text-[10px] mt-2 uppercase tracking-[0.3em] font-bold">Binance-Grade Liquidation Logic • Professional Edition</p>
+        <header class="mb-10 text-center">
+            <h1 class="text-3xl font-black uppercase tracking-tighter italic">Pro Futures Calculator</h1>
+            <p class="text-gray-400 text-[10px] mt-2 uppercase tracking-[0.3em] font-bold">Isolated Margin • Long & Short Logic • Precision Engine</p>
         </header>
+
+        <!-- Position Mode Toggle -->
+        <div class="flex gap-2 mb-10 p-1 bg-gray-100 rounded-xl max-w-sm mx-auto">
+            <button id="btnLong" onclick="setMode('long')" class="mode-btn flex-1 py-3 rounded-lg font-black uppercase text-xs tracking-widest active-long shadow-lg">Long</button>
+            <button id="btnShort" onclick="setMode('short')" class="mode-btn flex-1 py-3 rounded-lg font-black uppercase text-xs tracking-widest text-gray-400">Short</button>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
             <!-- Left Side: Inputs -->
             <section class="space-y-8">
                 <div>
-                    <label class="block text-[10px] font-black uppercase mb-2 text-gray-500 tracking-widest">Total Saldo (Wallet Balance)</label>
+                    <label class="block text-[10px] font-black uppercase mb-2 text-gray-500 tracking-widest">Wallet Balance (Total Saldo)</label>
                     <div class="relative">
                         <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
-                        <input type="text" id="walletBalance" value="1,000.00" placeholder="0.00" class="input-text pl-10 font-bold">
+                        <input type="text" id="walletBalance" value="1,000.00" class="input-text pl-10 font-bold">
                     </div>
                 </div>
 
@@ -92,7 +91,7 @@
                         <label class="block text-[10px] font-black uppercase mb-2 text-gray-500 tracking-widest">Margin Entry</label>
                         <div class="relative">
                             <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
-                            <input type="text" id="marginInput" value="100.00" placeholder="0.00" class="input-text pl-10 font-bold">
+                            <input type="text" id="marginInput" value="100.00" class="input-text pl-10 font-bold">
                         </div>
                     </div>
                     <div>
@@ -105,10 +104,10 @@
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-black uppercase mb-2 text-gray-500 tracking-widest">Harga Entry (Entry Price)</label>
+                    <label class="block text-[10px] font-black uppercase mb-2 text-gray-500 tracking-widest">Entry Price (Harga Masuk)</label>
                     <div class="relative">
                         <span class="absolute left-4 top-3.5 text-gray-400 font-bold">$</span>
-                        <input type="text" id="entryPrice" value="50,000.00" placeholder="0.00" class="input-text pl-10 font-bold">
+                        <input type="text" id="entryPrice" value="50,000.00" class="input-text pl-10 font-bold">
                     </div>
                 </div>
 
@@ -129,24 +128,20 @@
             </section>
 
             <!-- Right Side: Results -->
-            <section class="container-box p-8 flex flex-col justify-between shadow-xl border-2 border-black relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-5">
-                    <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.97 0-1.8 1.39-3.06 3.11-3.43V4h2.67v1.94c1.47.31 2.83 1.22 3.11 3.19h-1.91c-.28-1.15-1.12-1.64-2.32-1.64-1.46 0-2.31.63-2.31 1.58 0 .89.71 1.41 2.83 1.94 2.76.69 4.02 1.89 4.02 4.04 0 1.99-1.54 3.15-3.32 3.48z"/></svg>
-                </div>
-                
+            <section class="p-8 flex flex-col justify-between border-2 border-black rounded-2xl relative overflow-hidden bg-white shadow-xl">
                 <div class="space-y-8 relative z-10">
                     <div class="flex justify-between items-end">
-                        <span class="text-[10px] text-gray-400 font-black uppercase tracking-widest">Position Size</span>
+                        <span class="text-[10px] text-gray-400 font-black uppercase tracking-widest">Position Size (Notional)</span>
                         <span id="posSize" class="font-black text-2xl tracking-tighter">$0.00</span>
                     </div>
 
-                    <div class="bg-red-50 p-4 rounded-lg border border-red-100">
+                    <div id="liqCard" class="p-4 rounded-lg border bg-red-50 border-red-100">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-[10px] text-red-600 font-black uppercase tracking-widest">Liq. Distance</span>
                             <span id="liqDist" class="font-black text-3xl text-red-600 tracking-tighter">0.00%</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-[9px] text-red-400 font-bold uppercase">Estimated Liq. Price</span>
+                            <span class="text-[9px] text-red-400 font-bold uppercase">Est. Liquidation Price</span>
                             <span id="liqValueLabel" class="text-xs font-black text-red-700">$0.00</span>
                         </div>
                     </div>
@@ -157,31 +152,49 @@
                     </div>
                 </div>
 
-                <div class="divider"></div>
+                <div class="h-px bg-gray-100 my-8"></div>
 
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between px-1">
-                        <span class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Candle Movement Sim.</span>
-                        <div class="flex items-center gap-1">
-                            <input type="number" id="candleIn" value="2.0" step="0.1" class="candle-input text-lg">
-                            <span class="text-xs font-black">%</span>
+                <!-- Simulator Section -->
+                <div class="space-y-6">
+                    <!-- Candle Move Input -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between px-1">
+                            <span class="text-[10px] font-black uppercase text-gray-400 tracking-widest">Candle Movement %</span>
+                            <div class="flex items-center gap-1">
+                                <input type="number" id="candleIn" value="2.0" step="0.1" class="custom-input w-[70px] text-lg">
+                                <span class="text-xs font-black">%</span>
+                            </div>
+                        </div>
+                        <input type="range" id="candleSli" min="0.1" max="20" step="0.1" value="2" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <!-- ROE Manual Input -->
+                    <div class="p-3 bg-gray-50 rounded-xl border border-gray-200">
+                        <div class="flex items-center justify-between px-1">
+                            <div class="flex flex-col">
+                                <span class="text-[10px] font-black uppercase text-black tracking-widest">Input Target ROE</span>
+                                <span class="text-[8px] text-gray-400 font-bold uppercase">Auto-Sync With Candle %</span>
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <input type="number" id="roeIn" value="20.0" step="1" class="custom-input w-[90px] text-lg text-blue-600">
+                                <span class="text-xs font-black text-blue-600">%</span>
+                            </div>
                         </div>
                     </div>
-                    <input type="range" id="candleSli" min="0.1" max="10" step="0.1" value="2" class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer">
 
                     <div class="grid grid-cols-2 gap-4">
                         <div class="p-4 bg-green-50 rounded-xl border border-green-100">
                             <div class="flex justify-between items-center mb-1">
-                                <p class="text-[9px] text-green-700 font-black uppercase">Profit</p>
-                                <span class="roe-badge" id="pRoeBadge">+20.0% ROE</span>
+                                <p class="text-[9px] text-green-700 font-black uppercase">Take Profit</p>
+                                <span class="roe-badge" id="pRoeBadge">+20.0%</span>
                             </div>
                             <p id="pROE" class="font-black text-green-600 text-sm">+$0.00</p>
                             <p id="pPrice" class="text-[9px] text-green-500 font-medium mt-1">At $0.00</p>
                         </div>
                         <div class="p-4 bg-red-50 rounded-xl border border-red-100">
                             <div class="flex justify-between items-center mb-1">
-                                <p class="text-[9px] text-red-700 font-black uppercase">Loss</p>
-                                <span class="roe-badge" id="lRoeBadge">-20.0% ROE</span>
+                                <p class="text-[9px] text-red-700 font-black uppercase">Stop Loss</p>
+                                <span class="roe-badge" id="lRoeBadge">-20.0%</span>
                             </div>
                             <p id="lROE" class="font-black text-red-600 text-sm">-$0.00</p>
                             <p id="lPrice" class="text-[9px] text-red-500 font-medium mt-1">At $0.00</p>
@@ -192,47 +205,33 @@
         </div>
 
         <!-- Strategy Sections -->
-        <section class="space-y-12">
-            <div class="border-t-2 border-black pt-10">
-                <h2 class="text-xl font-black mb-6 uppercase tracking-tighter italic">Trading Dynamics</h2>
-                <div class="strategy-card bg-white">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm leading-relaxed text-gray-600">
-                        <div>
-                            <h3 class="font-black uppercase text-xs mb-3 text-black">How Candle Move Affects ROE</h3>
-                            <p>
-                                Your profit percentage (ROE) is the product of <strong>Asset Movement (%) × Leverage</strong>.
-                                <br><br>
-                                If a candle moves <strong>2%</strong> and you use <strong>10x leverage</strong>, your wallet sees a <strong>20% ROE</strong>. If you use <strong>50x leverage</strong>, that same 2% move becomes <strong>100% ROE</strong>.
-                            </p>
-                        </div>
-                        <div class="bg-black text-white p-6 rounded-xl">
-                            <h3 class="font-black uppercase text-[10px] mb-4 tracking-widest text-gray-400 text-center">ROE Quick-Chart</h3>
-                            <div class="space-y-3 font-mono text-[11px]">
-                                <div class="flex justify-between border-b border-gray-800 pb-1">
-                                    <span>Candle 1% @ 10x</span><span class="text-green-400">10% ROE</span>
-                                </div>
-                                <div class="flex justify-between border-b border-gray-800 pb-1">
-                                    <span>Candle 1% @ 50x</span><span class="text-green-400">50% ROE</span>
-                                </div>
-                                <div class="flex justify-between border-b border-gray-800 pb-1">
-                                    <span>Candle 2% @ 50x</span><span class="text-green-400">100% ROE</span>
-                                </div>
-                                <div class="flex justify-between border-b border-gray-800 pb-1">
-                                    <span>Candle 5% @ 20x</span><span class="text-green-400">100% ROE</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-gray-100">
+            <div class="p-6 bg-gray-50 rounded-2xl">
+                <h3 class="text-xs font-black uppercase mb-4 tracking-widest">Market Intel</h3>
+                <ul class="text-[11px] space-y-2 text-gray-500 leading-relaxed font-medium">
+                    <li>• <strong class="text-black">ROE ke Candle:</strong> Jika target ROE 100% pada leverage 20x, maka candle cukup bergerak 5%.</li>
+                    <li>• <strong class="text-black">Dynamic Sync:</strong> Mengubah ROE akan otomatis menghitung ulang pergerakan candle yang dibutuhkan.</li>
+                    <li>• <strong class="text-black">Risk Reward:</strong> Estimasi harga TP dan SL ditampilkan berdasarkan input simulasi Anda.</li>
+                </ul>
+            </div>
+            <div class="p-6 bg-black text-white rounded-2xl">
+                <h3 class="text-[10px] font-black uppercase mb-4 tracking-widest text-gray-400">Position Metrics</h3>
+                <div class="space-y-3 font-mono text-[11px]">
+                    <div class="flex justify-between"><span>ROE Calculation</span><span class="text-green-400">Leverage × Asset %</span></div>
+                    <div class="flex justify-between"><span>Margin Needed</span><span class="text-green-400">Notional / Leverage</span></div>
+                    <div class="flex justify-between"><span>Liquidation</span><span class="text-red-400">Maintenance 0.5%</span></div>
                 </div>
             </div>
         </section>
 
-        <footer class="mt-20 mb-10 text-center text-[10px] text-gray-300 uppercase tracking-[0.5em] font-bold">
-            Real-Time Engine • Precision Validation • 2026
+        <footer class="mt-16 text-center text-[9px] text-gray-300 uppercase tracking-[0.5em] font-bold">
+            High-Performance Crypto Trading Tool • 2026
         </footer>
     </div>
 
     <script>
+        let currentMode = 'long';
+
         const wIn = document.getElementById('walletBalance');
         const mIn = document.getElementById('marginInput');
         const pIn = document.getElementById('percentBalance');
@@ -241,6 +240,7 @@
         const lSli = document.getElementById('levSlider');
         const candleIn = document.getElementById('candleIn');
         const candleSli = document.getElementById('candleSli');
+        const roeIn = document.getElementById('roeIn');
         const sStatus = document.getElementById('safetyStatus');
 
         const psOut = document.getElementById('posSize');
@@ -253,14 +253,28 @@
         const lPriceOut = document.getElementById('lPrice');
         const pBadge = document.getElementById('pRoeBadge');
         const lBadge = document.getElementById('lRoeBadge');
+        const liqCard = document.getElementById('liqCard');
+
+        function setMode(mode) {
+            currentMode = mode;
+            const btnL = document.getElementById('btnLong');
+            const btnS = document.getElementById('btnShort');
+            
+            if (mode === 'long') {
+                btnL.className = "mode-btn flex-1 py-3 rounded-lg font-black uppercase text-xs tracking-widest active-long shadow-lg";
+                btnS.className = "mode-btn flex-1 py-3 rounded-lg font-black uppercase text-xs tracking-widest text-gray-400";
+            } else {
+                btnS.className = "mode-btn flex-1 py-3 rounded-lg font-black uppercase text-xs tracking-widest active-short shadow-lg";
+                btnL.className = "mode-btn flex-1 py-3 rounded-lg font-black uppercase text-xs tracking-widest text-gray-400";
+            }
+            calculate('mode');
+        }
 
         function formatInput(value) {
-            let cleanValue = value.replace(/[^0-9.]/g, '');
+            let cleanValue = value.toString().replace(/[^0-9.]/g, '');
             let parts = cleanValue.split('.');
             if (parts.length > 2) cleanValue = parts[0] + '.' + parts.slice(1).join('');
-            if (parts[0]) {
-                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
+            if (parts[0]) parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
             return parts.join('.');
         }
 
@@ -269,45 +283,28 @@
         }
 
         function fmtDisplay(v) {
-            return '$' + v.toLocaleString('en-US', {
-                minimumFractionDigits: 2, 
-                maximumFractionDigits: 2
-            });
-        }
-
-        function applyLiveFormatting(e) {
-            const el = e.target;
-            const originalSelection = el.selectionStart;
-            const originalValueLength = el.value.length;
-            const formatted = formatInput(el.value);
-            el.value = formatted;
-            const newLength = el.value.length;
-            const selectionOffset = newLength - originalValueLength;
-            el.setSelectionRange(originalSelection + selectionOffset, originalSelection + selectionOffset);
-            calculate(el.id === 'walletBalance' ? 'wallet' : (el.id === 'marginInput' ? 'margin' : 'entry'));
-        }
-
-        function updateSafety(liqPercent) {
-            if (liqPercent >= 15) {
-                sStatus.innerText = "Status: CONSERVATIVE (SAFE)";
-                sStatus.className = "mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border border-black bg-white text-black shadow-sm";
-            } else if (liqPercent >= 6) {
-                sStatus.innerText = "Status: MODERATE (CAUTION)";
-                sStatus.className = "mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border border-gray-200 bg-gray-50 text-gray-500";
-            } else {
-                sStatus.innerText = "Status: AGGRESSIVE (HIGH RISK)";
-                sStatus.className = "mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border border-red-600 bg-red-600 text-white animate-pulse shadow-lg";
-            }
+            return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
         function calculate(source) {
             const wallet = parseFormatted(wIn.value);
             const entryPrice = parseFormatted(eIn.value);
             const lev = parseInt(lMan.value) || 1;
-            const candleMovePercent = parseFloat(candleIn.value) || 0;
             
             let margin = parseFormatted(mIn.value);
             let percent = parseFloat(pIn.value) || 0;
+            let candleMovePercent = parseFloat(candleIn.value) || 0;
+            let roeTarget = parseFloat(roeIn.value) || 0;
+
+            // Handle ROE vs Candle Sync
+            if (source === 'roe') {
+                candleMovePercent = roeTarget / lev;
+                candleIn.value = candleMovePercent.toFixed(2);
+                candleSli.value = candleMovePercent;
+            } else {
+                roeTarget = candleMovePercent * lev;
+                roeIn.value = roeTarget.toFixed(1);
+            }
 
             if (source === 'wallet' || source === 'percent') {
                 margin = (percent / 100) * wallet;
@@ -320,42 +317,65 @@
             }
 
             const posSize = margin * lev;
-            const MMR = 0.005; 
+            const MMR = 0.005; // 0.5%
             const liqDistPercent = ((1 / lev) - MMR) * 100;
             const safeLiqDist = Math.max(0, liqDistPercent);
-            const liqPrice = entryPrice > 0 ? entryPrice * (1 - (safeLiqDist/100)) : 0;
-            const remWallet = wallet - margin;
             
-            // Simulation based on candle movement
-            const roeResult = candleMovePercent * lev;
-            const profitAmount = margin * (roeResult / 100);
-            
-            const targetProfitPrice = entryPrice * (1 + (candleMovePercent/100));
-            const targetLossPrice = entryPrice * (1 - (candleMovePercent/100));
+            let liqPrice = 0;
+            if (currentMode === 'long') {
+                liqPrice = entryPrice * (1 - (safeLiqDist/100));
+                liqCard.className = "p-4 rounded-lg border bg-red-50 border-red-100";
+            } else {
+                liqPrice = entryPrice * (1 + (safeLiqDist/100));
+                liqCard.className = "p-4 rounded-lg border bg-orange-50 border-orange-100";
+            }
 
-            // Update UI
+            const remWallet = wallet - margin;
+            const profitAmount = margin * (roeTarget / 100);
+            
+            let targetProfitPrice, targetLossPrice;
+            if (currentMode === 'long') {
+                targetProfitPrice = entryPrice * (1 + (candleMovePercent/100));
+                targetLossPrice = entryPrice * (1 - (candleMovePercent/100));
+            } else {
+                targetProfitPrice = entryPrice * (1 - (candleMovePercent/100));
+                targetLossPrice = entryPrice * (1 + (candleMovePercent/100));
+            }
+
+            // UI Update
             psOut.innerText = fmtDisplay(posSize);
             ldOut.innerText = safeLiqDist.toFixed(2) + '%';
-            lvOut.innerText = entryPrice > 0 ? fmtDisplay(liqPrice) : "Entry Price Required";
+            lvOut.innerText = entryPrice > 0 ? fmtDisplay(liqPrice) : "Harga Entry Dibutuhkan";
             rbOut.innerText = fmtDisplay(remWallet);
             
             pROEOut.innerText = '+' + fmtDisplay(profitAmount);
             lROEOut.innerText = '-' + fmtDisplay(profitAmount);
-            pBadge.innerText = `+${roeResult.toFixed(1)}% ROE`;
-            lBadge.innerText = `-${roeResult.toFixed(1)}% ROE`;
+            pBadge.innerText = `+${roeTarget.toFixed(1)}% ROE`;
+            lBadge.innerText = `-${roeTarget.toFixed(1)}% ROE`;
 
             if(entryPrice > 0) {
-                pPriceOut.innerText = `At ${fmtDisplay(targetProfitPrice)}`;
-                lPriceOut.innerText = `At ${fmtDisplay(targetLossPrice)}`;
+                pPriceOut.innerText = `Di ${fmtDisplay(targetProfitPrice)}`;
+                lPriceOut.innerText = `Di ${fmtDisplay(targetLossPrice)}`;
             } else {
-                pPriceOut.innerText = "Set Entry Price";
-                lPriceOut.innerText = "Set Entry Price";
+                pPriceOut.innerText = "Tentukan Entry";
+                lPriceOut.innerText = "Tentukan Entry";
             }
 
             updateSafety(safeLiqDist);
         }
 
-        // Listeners
+        // Event Listeners
+        function applyLiveFormatting(e) {
+            const el = e.target;
+            const originalSelection = el.selectionStart;
+            const originalValueLength = el.value.length;
+            const formatted = formatInput(el.value);
+            el.value = formatted;
+            const newLength = el.value.length;
+            el.setSelectionRange(originalSelection + (newLength - originalValueLength), originalSelection + (newLength - originalValueLength));
+            calculate(el.id === 'walletBalance' ? 'wallet' : (el.id === 'marginInput' ? 'margin' : 'entry'));
+        }
+
         wIn.addEventListener('input', applyLiveFormatting);
         mIn.addEventListener('input', applyLiveFormatting);
         eIn.addEventListener('input', applyLiveFormatting);
@@ -363,35 +383,4 @@
 
         lSli.addEventListener('input', () => {
             lMan.value = lSli.value;
-            calculate('lev');
-        });
-
-        lMan.addEventListener('input', () => {
-            let v = parseInt(lMan.value);
-            if (v > 125) v = 125;
-            if (v < 1) v = 1;
-            lSli.value = v;
-            calculate('lev');
-        });
-
-        candleSli.addEventListener('input', () => {
-            candleIn.value = candleSli.value;
-            calculate('candle');
-        });
-
-        candleIn.addEventListener('input', () => {
-            candleSli.value = candleIn.value;
-            calculate('candle');
-        });
-
-        [wIn, mIn, eIn].forEach(el => {
-            el.addEventListener('blur', (e) => {
-                let val = parseFormatted(e.target.value);
-                e.target.value = formatInput(val.toFixed(2));
-            });
-        });
-
-        // Start
-        calculate('margin');
-    </script>
-</body
+            calculat
