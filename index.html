@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Margin Calculator - Professional Edition</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
@@ -57,6 +58,12 @@
             text-align: center;
             outline: none;
             background: transparent;
+        }
+        /* Hide arrows in number input */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
     </style>
 </head>
@@ -121,7 +128,7 @@
                     </div>
                     <input type="range" id="levSlider" min="1" max="125" value="10" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                     
-                    <div id="safetyStatus" class="mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border transition-all duration-500">
+                    <div id="safetyStatus" class="mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border transition-all duration-500 border-black bg-white text-black shadow-sm">
                         Status: CALCULATING
                     </div>
                 </div>
@@ -135,7 +142,7 @@
                         <span id="posSize" class="font-black text-2xl tracking-tighter">$0.00</span>
                     </div>
 
-                    <div id="liqCard" class="p-4 rounded-lg border bg-red-50 border-red-100">
+                    <div id="liqCard" class="p-4 rounded-lg border bg-red-50 border-red-100 transition-colors duration-300">
                         <div class="flex justify-between items-center mb-1">
                             <span class="text-[10px] text-red-600 font-black uppercase tracking-widest">Liq. Distance</span>
                             <span id="liqDist" class="font-black text-3xl text-red-600 tracking-tighter">0.00%</span>
@@ -172,8 +179,8 @@
                     <div class="p-3 bg-gray-50 rounded-xl border border-gray-200">
                         <div class="flex items-center justify-between px-1">
                             <div class="flex flex-col">
-                                <span class="text-[10px] font-black uppercase text-black tracking-widest">Input Target ROE</span>
-                                <span class="text-[8px] text-gray-400 font-bold uppercase">Auto-Sync With Candle %</span>
+                                <span class="text-[10px] font-black uppercase text-black tracking-widest">Target ROE %</span>
+                                <span class="text-[8px] text-gray-400 font-bold uppercase">Sync with Candle</span>
                             </div>
                             <div class="flex items-center gap-1">
                                 <input type="number" id="roeIn" value="20.0" step="1" class="custom-input w-[90px] text-lg text-blue-600">
@@ -204,34 +211,15 @@
             </section>
         </div>
 
-        <!-- Strategy Sections -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-10 border-t border-gray-100">
-            <div class="p-6 bg-gray-50 rounded-2xl">
-                <h3 class="text-xs font-black uppercase mb-4 tracking-widest">Market Intel</h3>
-                <ul class="text-[11px] space-y-2 text-gray-500 leading-relaxed font-medium">
-                    <li>• <strong class="text-black">ROE ke Candle:</strong> Jika target ROE 100% pada leverage 20x, maka candle cukup bergerak 5%.</li>
-                    <li>• <strong class="text-black">Dynamic Sync:</strong> Mengubah ROE akan otomatis menghitung ulang pergerakan candle yang dibutuhkan.</li>
-                    <li>• <strong class="text-black">Risk Reward:</strong> Estimasi harga TP dan SL ditampilkan berdasarkan input simulasi Anda.</li>
-                </ul>
-            </div>
-            <div class="p-6 bg-black text-white rounded-2xl">
-                <h3 class="text-[10px] font-black uppercase mb-4 tracking-widest text-gray-400">Position Metrics</h3>
-                <div class="space-y-3 font-mono text-[11px]">
-                    <div class="flex justify-between"><span>ROE Calculation</span><span class="text-green-400">Leverage × Asset %</span></div>
-                    <div class="flex justify-between"><span>Margin Needed</span><span class="text-green-400">Notional / Leverage</span></div>
-                    <div class="flex justify-between"><span>Liquidation</span><span class="text-red-400">Maintenance 0.5%</span></div>
-                </div>
-            </div>
-        </section>
-
         <footer class="mt-16 text-center text-[9px] text-gray-300 uppercase tracking-[0.5em] font-bold">
-            High-Performance Crypto Trading Tool • 2026
+            Real-Time Futures Engine • 2026
         </footer>
     </div>
 
     <script>
         let currentMode = 'long';
 
+        // DOM Elements
         const wIn = document.getElementById('walletBalance');
         const mIn = document.getElementById('marginInput');
         const pIn = document.getElementById('percentBalance');
@@ -255,6 +243,7 @@
         const lBadge = document.getElementById('lRoeBadge');
         const liqCard = document.getElementById('liqCard');
 
+        // Logic Helpers
         function setMode(mode) {
             currentMode = mode;
             const btnL = document.getElementById('btnLong');
@@ -286,6 +275,20 @@
             return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
+        function updateSafety(liqPercent) {
+            if (liqPercent >= 15) {
+                sStatus.innerText = "Status: CONSERVATIVE (AMAN)";
+                sStatus.className = "mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border border-black bg-white text-black shadow-sm";
+            } else if (liqPercent >= 6) {
+                sStatus.innerText = "Status: MODERATE (WASPADA)";
+                sStatus.className = "mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border border-gray-200 bg-gray-50 text-gray-500";
+            } else {
+                sStatus.innerText = "Status: AGGRESSIVE (RISIKO TINGGI)";
+                sStatus.className = "mt-6 p-4 rounded-xl text-center text-[10px] font-black uppercase tracking-[0.2em] border border-red-600 bg-red-600 text-white animate-pulse shadow-lg";
+            }
+        }
+
+        // Main Calculation Engine
         function calculate(source) {
             const wallet = parseFormatted(wIn.value);
             const entryPrice = parseFormatted(eIn.value);
@@ -296,7 +299,7 @@
             let candleMovePercent = parseFloat(candleIn.value) || 0;
             let roeTarget = parseFloat(roeIn.value) || 0;
 
-            // Handle ROE vs Candle Sync
+            // Sync ROE and Candle Move
             if (source === 'roe') {
                 candleMovePercent = roeTarget / lev;
                 candleIn.value = candleMovePercent.toFixed(2);
@@ -306,6 +309,7 @@
                 roeIn.value = roeTarget.toFixed(1);
             }
 
+            // Sync Margin and Percent
             if (source === 'wallet' || source === 'percent') {
                 margin = (percent / 100) * wallet;
                 mIn.value = formatInput(margin.toFixed(2));
@@ -316,23 +320,25 @@
                 }
             }
 
+            // Core Position Data
             const posSize = margin * lev;
-            const MMR = 0.005; // 0.5%
+            const MMR = 0.005; 
             const liqDistPercent = ((1 / lev) - MMR) * 100;
             const safeLiqDist = Math.max(0, liqDistPercent);
             
             let liqPrice = 0;
             if (currentMode === 'long') {
                 liqPrice = entryPrice * (1 - (safeLiqDist/100));
-                liqCard.className = "p-4 rounded-lg border bg-red-50 border-red-100";
+                liqCard.className = "p-4 rounded-lg border bg-red-50 border-red-100 transition-colors duration-300";
             } else {
                 liqPrice = entryPrice * (1 + (safeLiqDist/100));
-                liqCard.className = "p-4 rounded-lg border bg-orange-50 border-orange-100";
+                liqCard.className = "p-4 rounded-lg border bg-orange-50 border-orange-100 transition-colors duration-300";
             }
 
             const remWallet = wallet - margin;
             const profitAmount = margin * (roeTarget / 100);
             
+            // Simulator Logic
             let targetProfitPrice, targetLossPrice;
             if (currentMode === 'long') {
                 targetProfitPrice = entryPrice * (1 + (candleMovePercent/100));
@@ -342,45 +348,65 @@
                 targetLossPrice = entryPrice * (1 + (candleMovePercent/100));
             }
 
-            // UI Update
+            // Render UI
             psOut.innerText = fmtDisplay(posSize);
             ldOut.innerText = safeLiqDist.toFixed(2) + '%';
-            lvOut.innerText = entryPrice > 0 ? fmtDisplay(liqPrice) : "Harga Entry Dibutuhkan";
+            lvOut.innerText = entryPrice > 0 ? fmtDisplay(liqPrice) : "$0.00";
             rbOut.innerText = fmtDisplay(remWallet);
             
             pROEOut.innerText = '+' + fmtDisplay(profitAmount);
             lROEOut.innerText = '-' + fmtDisplay(profitAmount);
-            pBadge.innerText = `+${roeTarget.toFixed(1)}% ROE`;
-            lBadge.innerText = `-${roeTarget.toFixed(1)}% ROE`;
+            pBadge.innerText = `+${roeTarget.toFixed(1)}%`;
+            lBadge.innerText = `-${roeTarget.toFixed(1)}%`;
 
             if(entryPrice > 0) {
-                pPriceOut.innerText = `Di ${fmtDisplay(targetProfitPrice)}`;
-                lPriceOut.innerText = `Di ${fmtDisplay(targetLossPrice)}`;
+                pPriceOut.innerText = `At ${fmtDisplay(targetProfitPrice)}`;
+                lPriceOut.innerText = `At ${fmtDisplay(targetLossPrice)}`;
             } else {
-                pPriceOut.innerText = "Tentukan Entry";
-                lPriceOut.innerText = "Tentukan Entry";
+                pPriceOut.innerText = "Set Entry Price";
+                lPriceOut.innerText = "Set Entry Price";
             }
 
             updateSafety(safeLiqDist);
         }
 
-        // Event Listeners
-        function applyLiveFormatting(e) {
+        // Input Handlers
+        function handleFormatInput(e) {
             const el = e.target;
-            const originalSelection = el.selectionStart;
-            const originalValueLength = el.value.length;
-            const formatted = formatInput(el.value);
-            el.value = formatted;
-            const newLength = el.value.length;
-            el.setSelectionRange(originalSelection + (newLength - originalValueLength), originalSelection + (newLength - originalValueLength));
+            const start = el.selectionStart;
+            const oldLen = el.value.length;
+            el.value = formatInput(el.value);
+            const newLen = el.value.length;
+            el.setSelectionRange(start + (newLen - oldLen), start + (newLen - oldLen));
             calculate(el.id === 'walletBalance' ? 'wallet' : (el.id === 'marginInput' ? 'margin' : 'entry'));
         }
 
-        wIn.addEventListener('input', applyLiveFormatting);
-        mIn.addEventListener('input', applyLiveFormatting);
-        eIn.addEventListener('input', applyLiveFormatting);
+        wIn.addEventListener('input', handleFormatInput);
+        mIn.addEventListener('input', handleFormatInput);
+        eIn.addEventListener('input', handleFormatInput);
         pIn.addEventListener('input', () => calculate('percent'));
+        
+        lSli.addEventListener('input', () => { lMan.value = lSli.value; calculate('lev'); });
+        lMan.addEventListener('input', () => { 
+            let v = Math.min(Math.max(parseInt(lMan.value) || 1, 1), 125);
+            lSli.value = v;
+            calculate('lev');
+        });
 
-        lSli.addEventListener('input', () => {
-            lMan.value = lSli.value;
-            calculat
+        candleSli.addEventListener('input', () => { candleIn.value = candleSli.value; calculate('candle'); });
+        candleIn.addEventListener('input', () => { candleSli.value = candleIn.value; calculate('candle'); });
+        roeIn.addEventListener('input', () => calculate('roe'));
+
+        // Post-blur cleaning
+        [wIn, mIn, eIn].forEach(el => {
+            el.addEventListener('blur', (e) => {
+                let val = parseFormatted(e.target.value);
+                e.target.value = formatInput(val.toFixed(2));
+            });
+        });
+
+        // Bootstrap
+        calculate('margin');
+    </script>
+</body>
+</html>
